@@ -75,7 +75,7 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 
 | Method | Path | What it does |
 |--------|------|--------------|
-| `POST` | `/v1/events/ingest` | Report that something happened outside Selda (a form, an analysis, an ad response). Creates the lead if new, recognises it if known, records it on the timeline, and can put it on a campaign's review list. Pass autoAdvance to have Selda write the reply from the Brain straight away and leave it in the Sales Inbox — draft.ready is published when it is there. It never sends. |
+| `POST` | `/v1/events/ingest` | Report that something happened outside Selda (a form, an analysis, an ad response). Creates the lead if new, recognises it if known, records it on the timeline, and can put it on a campaign's review list. Pass autoAdvance to have Selda write the reply from the Brain straight away and leave it in the Sales Inbox, draft.ready is published when it is there. It never sends. |
 
 ## `flows`
 
@@ -109,14 +109,14 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 |--------|------|--------------|
 | `GET` | `/v1/leads` | Leads in a workspace. |
 | `POST` | `/v1/leads` | Add one company/contact. Pass `analysis` with research you already did and the message is written from it instead of a fresh crawl. |
-| `DELETE` | `/v1/leads/{leadId}` | Remove one lead. Deleting is the caller's act — Selda never removes a lead on its own. |
+| `DELETE` | `/v1/leads/{leadId}` | Remove one lead. Deleting is the caller's act, Selda never removes a lead on its own. |
 | `GET` | `/v1/leads/{leadId}` | One lead in full: research, fit, outreach angle, notes. |
 | `PATCH` | `/v1/leads/{leadId}` | Edit a lead's fields, including its status. Org-scoped, so an API key can reach it. |
 | `POST` | `/v1/leads/{leadId}/add-alias` | Claim another email address for a lead, so a reply from it lands in the same conversation. Also adopts that address's earlier unlinked inbound. |
 | `POST` | `/v1/leads/{leadId}/add-tag` | Tag a lead. |
 | `POST` | `/v1/leads/{leadId}/enrich` | Enrich one lead from a natural-language instruction. |
-| `POST` | `/v1/leads/{leadId}/skip` | DELETES a lead and every message on it (legacy path, Clerk-authenticated — an API key cannot reach this; use leads.delete instead). |
-| `PATCH` | `/v1/leads/{leadId}/status` | Set a lead's status (legacy path, Clerk-authenticated — an API key cannot reach this; the MCP tool uses the org-scoped leads.update). |
+| `POST` | `/v1/leads/{leadId}/skip` | DELETES a lead and every message on it (legacy path, Clerk-authenticated, an API key cannot reach this; use leads.delete instead). |
+| `PATCH` | `/v1/leads/{leadId}/status` | Set a lead's status (legacy path, Clerk-authenticated, an API key cannot reach this; the MCP tool uses the org-scoped leads.update). |
 | `POST` | `/v1/leads/add-batch` | Add many companies/contacts in one call. |
 | `POST` | `/v1/leads/delete-batch` | Remove many leads. |
 | `POST` | `/v1/leads/enrich-batch` | Enrich many leads from a natural-language instruction. |
@@ -150,7 +150,7 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 | Method | Path | What it does |
 |--------|------|--------------|
 | `POST` | `/v1/replies/classify` | Classify inbound replies. |
-| `POST` | `/v1/replies/draft` | Write a reply draft into a lead's Sales Inbox thread. A person reviews and sends it in the app — this can send nothing. |
+| `POST` | `/v1/replies/draft` | Write a reply draft into a lead's Sales Inbox thread. A person reviews and sends it in the app, this can send nothing. |
 | `POST` | `/v1/replies/preview` | Ask how Selda would answer an enquiry, from this workspace's Brain, without creating a lead or storing a draft. Same writer the real reply uses, so tuning against this tunes the real thing. Stores nothing and sends nothing. |
 
 ## `runs`
@@ -158,12 +158,12 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 | Method | Path | What it does |
 |--------|------|--------------|
 | `GET` | `/v1/runs` | Every campaign run in a project, newest first, with its status. Use it to find a runId you no longer have. |
-| `POST` | `/v1/runs/{runId}/archive` | Close a campaign run and take it off the active list. Keeps every contact and every message — deleting contacts stays a human act in the app. |
-| `POST` | `/v1/runs/{runId}/confirm-companies` | Confirm a run's company list so Selda finds the decision-makers and drafts the messages. Spends credits. Sends nothing — the send is still a human press in the app. |
+| `POST` | `/v1/runs/{runId}/archive` | Close a campaign run and take it off the active list. Keeps every contact and every message, deleting contacts stays a human act in the app. |
+| `POST` | `/v1/runs/{runId}/confirm-companies` | Confirm a run's company list so Selda finds the decision-makers and drafts the messages. Spends credits. Sends nothing, the send is still a human press in the app. |
 | `GET` | `/v1/runs/{runId}/leads` | The companies a run found, each with the message Selda drafted for it. Nothing is sent. |
 | `POST` | `/v1/runs/{runId}/rename` | Give a campaign run a name a person would recognise. An empty name restores the derived title. |
 | `GET` | `/v1/runs/{runId}/status` | Status of one campaign run: phase, companies found, contacts resolved, drafts written, errors. |
-| `POST` | `/v1/runs/start-from-leads` | Start a campaign from leads already pushed in with selda_add_lead, selected by the source label you gave them. No discovery — Selda writes a message per lead from the analysis that came with it, and stops at the drafts. |
+| `POST` | `/v1/runs/start-from-leads` | Start a campaign from leads already pushed in with selda_add_lead, selected by the source label you gave them. No discovery, Selda writes a message per lead from the analysis that came with it, and stops at the drafts. |
 
 ## `webhooks`
 

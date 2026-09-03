@@ -2994,7 +2994,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "WHICH CHANNELS THIS CAMPAIGN SENDS ON — the API's version of the Määritä card's Kanavat step. Without it this door could not name a channel at all: it auto-creates a campaign, and `createCampaignForEngine` then stamps `[\"email\"]`, so every LinkedIn campaign an agent or an integration started was an email campaign and nothing said so. It is read by discovery, by the contact ladder, by the writer and by `launchRun`, so a wrong value here is not cosmetic. Applies to the campaign THIS call creates. When `campaignId` names an existing campaign that campaign's own `channels` govern (change them with `campaigns.update`) — the run must not be able to disagree with the campaign it belongs to. Absent = unchanged: the campaign's default."
+                    "description": "WHICH CHANNELS THIS CAMPAIGN SENDS ON, the API's version of the Määritä card's Kanavat step. Without it this door could not name a channel at all: it auto-creates a campaign, and `createCampaignForEngine` then stamps `[\"email\"]`, so every LinkedIn campaign an agent or an integration started was an email campaign and nothing said so. It is read by discovery, by the contact ladder, by the writer and by `launchRun`, so a wrong value here is not cosmetic. Applies to the campaign THIS call creates. When `campaignId` names an existing campaign that campaign's own `channels` govern (change them with `campaigns.update`), the run must not be able to disagree with the campaign it belongs to. Absent = unchanged: the campaign's default."
                   }
                 },
                 "additionalProperties": false,
@@ -3011,7 +3011,7 @@
       "post": {
         "operationId": "events_ingest",
         "summary": "events.ingest",
-        "description": "Report that something happened outside Selda (a form, an analysis, an ad response). Creates the lead if new, recognises it if known, records it on the timeline, and can put it on a campaign's review list. Pass autoAdvance to have Selda write the reply from the Brain straight away and leave it in the Sales Inbox — draft.ready is published when it is there. It never sends.\n\nDispatched to `events.ingest` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- Needs the `inboundIntake` entitlement on top of the scope\n- MCP tools that wrap the same function: `selda_ingest_event`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Report that something happened outside Selda (a form, an analysis, an ad response). Creates the lead if new, recognises it if known, records it on the timeline, and can put it on a campaign's review list. Pass autoAdvance to have Selda write the reply from the Brain straight away and leave it in the Sales Inbox, draft.ready is published when it is there. It never sends.\n\nDispatched to `events.ingest` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- Needs the `inboundIntake` entitlement on top of the scope\n- MCP tools that wrap the same function: `selda_ingest_event`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "events"
         ],
@@ -4952,7 +4952,7 @@
       "delete": {
         "operationId": "leads_delete",
         "summary": "leads.delete",
-        "description": "Remove one lead. Deleting is the caller's act — Selda never removes a lead on its own.\n\nDispatched to `leads.delete` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_delete_lead`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Remove one lead. Deleting is the caller's act, Selda never removes a lead on its own.\n\nDispatched to `leads.delete` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_delete_lead`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "leads"
         ],
@@ -5275,7 +5275,7 @@
                   },
                   "analysis": {
                     "type": "string",
-                    "description": "THE ANALYSIS IS CORRECTABLE, because a wrong fact in it is not cosmetic. `add_lead` writes `providedResearch` and nothing could edit it, so an analysis pushed with a false claim — \"the price is not shown\", when the prices were right there — was permanent, and it is the text Selda writes the message FROM. The wrong fact would have reached the customer with no way to stop it short of deleting the lead."
+                    "description": "THE ANALYSIS IS CORRECTABLE, because a wrong fact in it is not cosmetic. `add_lead` writes `providedResearch` and nothing could edit it, so an analysis pushed with a false claim, \"the price is not shown\", when the prices were right there, was permanent, and it is the text Selda writes the message FROM. The wrong fact would have reached the customer with no way to stop it short of deleting the lead."
                   },
                   "campaignId": {
                     "type": "string"
@@ -5351,7 +5351,7 @@
                         "type": "null"
                       }
                     ],
-                    "description": "Where the deal stands — set by the person or their agent; Selda never advances it itself."
+                    "description": "Where the deal stands, set by the person or their agent; Selda never advances it itself."
                   },
                   "dealValueEur": {
                     "anyOf": [
@@ -5744,7 +5744,7 @@
       "post": {
         "operationId": "leads_skip",
         "summary": "leads.skip",
-        "description": "DELETES a lead and every message on it (legacy path, Clerk-authenticated — an API key cannot reach this; use leads.delete instead).\n\nDispatched to `leads.skip` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- A legacy entry. Its summary above says what that costs you.",
+        "description": "DELETES a lead and every message on it (legacy path, Clerk-authenticated, an API key cannot reach this; use leads.delete instead).\n\nDispatched to `leads.skip` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- A legacy entry. Its summary above says what that costs you.",
         "tags": [
           "leads"
         ],
@@ -5844,7 +5844,7 @@
       "patch": {
         "operationId": "leads_updateStatus",
         "summary": "leads.updateStatus",
-        "description": "Set a lead's status (legacy path, Clerk-authenticated — an API key cannot reach this; the MCP tool uses the org-scoped leads.update).\n\nDispatched to `leads.updateStatus` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- A legacy entry. Its summary above says what that costs you.",
+        "description": "Set a lead's status (legacy path, Clerk-authenticated, an API key cannot reach this; the MCP tool uses the org-scoped leads.update).\n\nDispatched to `leads.updateStatus` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- A legacy entry. Its summary above says what that costs you.",
         "tags": [
           "leads"
         ],
@@ -6656,11 +6656,11 @@
                   },
                   "targetRunId": {
                     "type": "string",
-                    "description": "Push INTO an existing campaign instead of creating one (#357) — the campaign's run id. The other door onto the same feature: a script that already produced a second folder of prospects for the same motion should be able to add them as the campaign's next wave rather than fragmenting one effort across several campaigns. The permission rule is unchanged — the wave parks at the company-list gate and inherits nothing from an earlier wave's grant — and the run must belong to the project this API key's org owns, which `appendCandidateBatch` verifies. A Convex document id in the `campaignRuns` table."
+                    "description": "Push INTO an existing campaign instead of creating one (#357), the campaign's run id. The other door onto the same feature: a script that already produced a second folder of prospects for the same motion should be able to add them as the campaign's next wave rather than fragmenting one effort across several campaigns. The permission rule is unchanged, the wave parks at the company-list gate and inherits nothing from an earlier wave's grant, and the run must belong to the project this API key's org owns, which `appendCandidateBatch` verifies. A Convex document id in the `campaignRuns` table."
                   },
                   "campaignBrief": {
                     "type": "string",
-                    "description": "The operator's campaign document (18.8.2026): rules, structure, tone, what may not be claimed. This is what made the API pipeline half-manual — analyses went in over the wire, but the RULES had to be pasted by hand in the app, and a campaign without them runs on house defaults. Honored exactly as the Määritä card's own-prompt mode is. On a `targetRunId` wave it is accepted only when the campaign has no brief yet; a differing one is refused out loud."
+                    "description": "The operator's campaign document (18.8.2026): rules, structure, tone, what may not be claimed. This is what made the API pipeline half-manual, analyses went in over the wire, but the RULES had to be pasted by hand in the app, and a campaign without them runs on house defaults. Honored exactly as the Määritä card's own-prompt mode is. On a `targetRunId` wave it is accepted only when the campaign has no brief yet; a differing one is refused out loud."
                   },
                   "autoAdvance": {
                     "anyOf": [
@@ -6678,7 +6678,7 @@
                         }
                       }
                     ],
-                    "description": "Explicit grant to continue past the company list. A script CAN pass this — Autopilot is a legitimate caller — but it is never the default, and the grant is recorded on the run. Per-stage since #301: `[\"leads\"]` grants contact lookup and stops before any message is written; `true` grants both. A script that only wants the contacts found should say so rather than granting everything, because message writing spends credits. Neither form can send. Sending stays behind `launchRun` and the approval gate."
+                    "description": "Explicit grant to continue past the company list. A script CAN pass this, Autopilot is a legitimate caller, but it is never the default, and the grant is recorded on the run. Per-stage since #301: `[\"leads\"]` grants contact lookup and stops before any message is written; `true` grants both. A script that only wants the contacts found should say so rather than granting everything, because message writing spends credits. Neither form can send. Sending stays behind `launchRun` and the approval gate."
                   }
                 },
                 "additionalProperties": false,
@@ -7758,7 +7758,7 @@
       "post": {
         "operationId": "replies_draft",
         "summary": "replies.draft",
-        "description": "Write a reply draft into a lead's Sales Inbox thread. A person reviews and sends it in the app — this can send nothing.\n\nDispatched to `replies.draft` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_draft_reply`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Write a reply draft into a lead's Sales Inbox thread. A person reviews and sends it in the app, this can send nothing.\n\nDispatched to `replies.draft` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_draft_reply`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "replies"
         ],
@@ -7859,7 +7859,7 @@
                   },
                   "instruction": {
                     "type": "string",
-                    "description": "What the person asked for in their own words (\"tee tästä lyhyempi\"). Optional, kept only in the draft history beside the text — it changes nothing about what is stored in the composer. The `selda_draft_reply` tool schemas in `api/mcp.ts` and `mcp-server/index.ts` do not pass it yet, so this arrives empty on the tool path until they do."
+                    "description": "What the person asked for in their own words (\"tee tästä lyhyempi\"). Optional, kept only in the draft history beside the text, it changes nothing about what is stored in the composer. The `selda_draft_reply` tool schemas in `api/mcp.ts` and `mcp-server/index.ts` do not pass it yet, so this arrives empty on the tool path until they do."
                   }
                 },
                 "additionalProperties": false,
@@ -7982,7 +7982,7 @@
                   },
                   "who": {
                     "type": "string",
-                    "description": "Who it is from, for the greeting. Optional — an anonymous enquiry is a real case."
+                    "description": "Who it is from, for the greeting. Optional, an anonymous enquiry is a real case."
                   },
                   "company": {
                     "type": "string"
@@ -8120,7 +8120,7 @@
       "post": {
         "operationId": "runs_archive",
         "summary": "runs.archive",
-        "description": "Close a campaign run and take it off the active list. Keeps every contact and every message — deleting contacts stays a human act in the app.\n\nDispatched to `runs.archive` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_archive_run`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Close a campaign run and take it off the active list. Keeps every contact and every message, deleting contacts stays a human act in the app.\n\nDispatched to `runs.archive` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_archive_run`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "runs"
         ],
@@ -8223,7 +8223,7 @@
       "post": {
         "operationId": "runs_confirmCompanies",
         "summary": "runs.confirmCompanies",
-        "description": "Confirm a run's company list so Selda finds the decision-makers and drafts the messages. Spends credits. Sends nothing — the send is still a human press in the app.\n\nDispatched to `runs.confirmCompanies` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key is refused: it runs the discovery and research engine: web search, crawls, model calls, per-lead credits\n- MCP tools that wrap the same function: `selda_confirm_companies`\n- Filled in from your API key, never sent by you: `orgId`\n- A legacy entry. Its summary above says what that costs you.",
+        "description": "Confirm a run's company list so Selda finds the decision-makers and drafts the messages. Spends credits. Sends nothing, the send is still a human press in the app.\n\nDispatched to `runs.confirmCompanies` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key is refused: it runs the discovery and research engine: web search, crawls, model calls, per-lead credits\n- MCP tools that wrap the same function: `selda_confirm_companies`\n- Filled in from your API key, never sent by you: `orgId`\n- A legacy entry. Its summary above says what that costs you.",
         "tags": [
           "runs"
         ],
@@ -8333,7 +8333,7 @@
                   },
                   "languageChosen": {
                     "type": "boolean",
-                    "description": "DID THE HUMAN NAME THAT LANGUAGE at this gate, or is it Selda's proposal riding through? The card sends a language on every confirm, whether or not anyone touched the field, and the engine read the mere presence of `confirmedProfile.language` as \"the operator answered the question\" — then enforced it over every company's own evidence and told them they had chosen it. Absent = an older client that does not send it; the presence of a language is then read as before, and simply never attributed to the human."
+                    "description": "DID THE HUMAN NAME THAT LANGUAGE at this gate, or is it Selda's proposal riding through? The card sends a language on every confirm, whether or not anyone touched the field, and the engine read the mere presence of `confirmedProfile.language` as \"the operator answered the question\", then enforced it over every company's own evidence and told them they had chosen it. Absent = an older client that does not send it; the presence of a language is then read as before, and simply never attributed to the human."
                   },
                   "channel": {
                     "type": "string"
@@ -8413,7 +8413,7 @@
                         "type": "boolean"
                       }
                     },
-                    "description": "WHAT THIS SEARCH IS ASKED TO LOOK UP BEYOND AN ADDRESS — the human's answers, #127. Absent = an older client, and then `normalizeContactLookups` supplies the defaults, which are written to reproduce what those runs already did. Neither switch controls KEEPING anything. Every phone number and every profile URL a rung already running happens to publish is stored either way — dropping one to honour a switch would be Selda throwing away a fact nobody asked it to throw away. What they control is whether Selda spends anything going to look."
+                    "description": "WHAT THIS SEARCH IS ASKED TO LOOK UP BEYOND AN ADDRESS, the human's answers, #127. Absent = an older client, and then `normalizeContactLookups` supplies the defaults, which are written to reproduce what those runs already did. Neither switch controls KEEPING anything. Every phone number and every profile URL a rung already running happens to publish is stored either way, dropping one to honour a switch would be Selda throwing away a fact nobody asked it to throw away. What they control is whether Selda spends anything going to look."
                   },
                   "contactResearchRequest": {
                     "type": "string",
@@ -8460,7 +8460,7 @@
             "name": "withDraftOnly",
             "in": "query",
             "required": false,
-            "description": "Only rows that actually carry a draft. Default false — the caller usually wants everything.",
+            "description": "Only rows that actually carry a draft. Default false, the caller usually wants everything.",
             "schema": {
               "type": "boolean"
             }
@@ -8778,7 +8778,7 @@
       "post": {
         "operationId": "runs_startFromLeads",
         "summary": "runs.startFromLeads",
-        "description": "Start a campaign from leads already pushed in with selda_add_lead, selected by the source label you gave them. No discovery — Selda writes a message per lead from the analysis that came with it, and stops at the drafts.\n\nDispatched to `runs.startFromLeads` on `POST /mcp/run`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `pipeline`\n- A free sandbox key is refused: it runs the discovery and research engine: web search, crawls, model calls, per-lead credits\n- MCP tools that wrap the same function: `selda_start_campaign_from_leads`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Start a campaign from leads already pushed in with selda_add_lead, selected by the source label you gave them. No discovery, Selda writes a message per lead from the analysis that came with it, and stops at the drafts.\n\nDispatched to `runs.startFromLeads` on `POST /mcp/run`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `pipeline`\n- A free sandbox key is refused: it runs the discovery and research engine: web search, crawls, model calls, per-lead credits\n- MCP tools that wrap the same function: `selda_start_campaign_from_leads`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "runs"
         ],
@@ -8885,7 +8885,7 @@
                   },
                   "campaignBrief": {
                     "type": "string",
-                    "description": "The operator's campaign document (18.8.2026) — rules, structure, tone, what may and may not be claimed. The API could push analyses in but had no way to set the RULES, which made every programmatic campaign half-manual: material in over the wire, brief pasted by hand in the app. Honored exactly as the Määritä card's own-prompt mode is."
+                    "description": "The operator's campaign document (18.8.2026), rules, structure, tone, what may and may not be claimed. The API could push analyses in but had no way to set the RULES, which made every programmatic campaign half-manual: material in over the wire, brief pasted by hand in the app. Honored exactly as the Määritä card's own-prompt mode is."
                   }
                 },
                 "additionalProperties": false,
