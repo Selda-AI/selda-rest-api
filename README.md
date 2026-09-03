@@ -7,22 +7,6 @@ https://api.selda.ai/v1/...
 Authorization: Bearer sk_live_...
 ```
 
-## What answers today
-
-```
-POST https://api.selda.ai/mcp/query      live
-POST https://api.selda.ai/mcp/mutate     live
-POST https://api.selda.ai/mcp/run        live
-GET  https://api.selda.ai/mcp/capabilities   live, no key needed
-
-GET/POST https://api.selda.ai/v1/...     not yet on production
-```
-
-The RPC form has been serving for months and is what every example below uses. The `/v1/` REST
-paths and the OpenAPI document are the same dispatcher behind different URLs, they are running on
-the staging deployment, and they reach production with the next release. Nothing about the RPC form
-changes when they do.
-
 **Nothing here sends a message.** The only send in Selda is a button a person presses in the app,
 and it is reachable by no key of any kind. An API key can research, write and draft; a human
 approves. That is a property of the dispatch registry, not a setting, so it is not something you
@@ -60,8 +44,8 @@ curl -s -X POST https://api.selda.ai/mcp/mutate \
       } }'
 ```
 
-Every command above runs against production today. The same two calls become `GET /v1/projects`
-and `POST /v1/leads` once the REST paths ship.
+The same two calls are `GET /v1/projects` and `POST /v1/leads` as REST paths. Both forms are the
+same dispatcher, so pick whichever suits your client.
 
 `analysis` is the point. Pass it and the eventual message is written from your research instead of
 a fresh crawl. Anything invented in that field becomes a claim in a real message, so put facts in
@@ -138,6 +122,7 @@ the endpoint is right.**
 |------|------|
 | [ENDPOINTS.md](./ENDPOINTS.md) | Every route, by group |
 | [openapi.json](./openapi.json) | OpenAPI 3.1.0, 62 paths. Import into Postman or a client generator. |
+| [examples/](./examples) | Runnable: curl, Node, Python, PHP |
 | [CHANGELOG.md](./CHANGELOG.md) | What moved, and when |
 
 **Response shapes are mostly absent from the OpenAPI document, on purpose.** One operation declares
