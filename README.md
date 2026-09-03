@@ -7,6 +7,22 @@ https://api.selda.ai/v1/...
 Authorization: Bearer sk_live_...
 ```
 
+## What answers today
+
+```
+POST https://api.selda.ai/mcp/query      live
+POST https://api.selda.ai/mcp/mutate     live
+POST https://api.selda.ai/mcp/run        live
+GET  https://api.selda.ai/mcp/capabilities   live, no key needed
+
+GET/POST https://api.selda.ai/v1/...     not yet on production
+```
+
+The RPC form has been serving for months and is what every example below uses. The `/v1/` REST
+paths and the OpenAPI document are the same dispatcher behind different URLs, they are running on
+the staging deployment, and they reach production with the next release. Nothing about the RPC form
+changes when they do.
+
 **Nothing here sends a message.** The only send in Selda is a button a person presses in the app,
 and it is reachable by no key of any kind. An API key can research, write and draft; a human
 approves. That is a property of the dispatch registry, not a setting, so it is not something you
@@ -26,21 +42,26 @@ full product in test mode, nothing sends for real. A paid workspace can mint `sk
 curl -s https://api.selda.ai/mcp/capabilities | jq '.value.count'
 
 # 2. Your workspaces. Every other call needs a projectId.
-curl -s https://api.selda.ai/v1/projects \
-  -H "Authorization: Bearer $SELDA_API_KEY"
-
-# 3. Push a company you already researched. Selda writes the message FROM your text.
-curl -s -X POST https://api.selda.ai/v1/leads \
+curl -s -X POST https://api.selda.ai/mcp/query \
   -H "Authorization: Bearer $SELDA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "projectId": "PASTE_PROJECT_ID",
-    "company":   "Nordic Books Oy",
-    "email":     "mika@nordicbooks.fi",
-    "firstName": "Mika",
-    "analysis":  "They run three shops and close the books by hand every month."
-  }'
+  -d '{ "fn": "projects.list", "args": {} }'
+
+# 3. Push a company you already researched. Selda writes the message FROM your text.
+curl -s -X POST https://api.selda.ai/mcp/mutate \
+  -H "Authorization: Bearer $SELDA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "fn": "leads.add", "args": {
+        "projectId": "PASTE_PROJECT_ID",
+        "company":   "Nordic Books Oy",
+        "email":     "mika@nordicbooks.fi",
+        "firstName": "Mika",
+        "analysis":  "They run three shops and close the books by hand every month."
+      } }'
 ```
+
+Every command above runs against production today. The same two calls become `GET /v1/projects`
+and `POST /v1/leads` once the REST paths ship.
 
 `analysis` is the point. Pass it and the eventual message is written from your research instead of
 a fresh crawl. Anything invented in that field becomes a claim in a real message, so put facts in
