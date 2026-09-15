@@ -3,7 +3,7 @@
 
 # Endpoints
 
-71 routes across 18 groups. Every one is answered by the same
+78 routes across 19 groups. Every one is answered by the same
 dispatcher that answers the RPC form, with the same authentication, the same scope check and
 the same organisation scoping. A path cannot reach anything the RPC form refuses.
 
@@ -17,7 +17,7 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 | Method | Path | What it does |
 |--------|------|--------------|
 | `GET` | `/v1/brain` | The workspace's structured knowledge: products, partners, references, company facts, and the things Selda must never say. Each item has a type, a title and a body. |
-| `POST` | `/v1/brain` | Add one thing Selda should know: a product, a partner, a reference, a company fact, a note, or something it must never say. |
+| `POST` | `/v1/brain` | Add one thing Selda should know: a product, a partner, a reference, a company fact, a note, something it must never say, or a `writing_rule` — a standing instruction about HOW messages are written, which reaches the composer as a directive and is never quoted as material. |
 | `POST` | `/v1/brain/remove` | Take one Brain item back out. The human owns what Selda knows. |
 | `POST` | `/v1/brain/update` | Rewrite the title and body of one Brain item. |
 
@@ -62,6 +62,9 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 
 | Method | Path | What it does |
 |--------|------|--------------|
+| `POST` | `/v1/drafts/attach` | Attach files to ONE draft, by public https url or by storageId, on top of what the campaign already gives it. Refuses a message that already went out; never sends. |
+| `GET` | `/v1/drafts/attachments` | The files one draft would send (campaign files included, in send order) or the files a campaign gives every message. Each with a url. |
+| `POST` | `/v1/drafts/detach` | Take one file off ONE draft. A campaign-level file is left out of this message only, everybody else keeps it. The bytes are never deleted. |
 | `POST` | `/v1/drafts/remove` | Take one draft out of a run so it cannot be sent. The row stays visible with your reason and the app can put it back. Refuses a message that already went out. |
 | `POST` | `/v1/drafts/update` | Rewrite the draft on one run lead. Refuses a message that already went out; never sends. |
 
@@ -157,13 +160,22 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 
 | Method | Path | What it does |
 |--------|------|--------------|
-| `GET` | `/v1/runs` | Every campaign run in a project, newest first, with its status. Use it to find a runId you no longer have. |
+| `GET` | `/v1/runs` | Every campaign run in a project, newest first, with its status. Use it to find a runId you no longer have. Runs the human archived are left out; pass includeArchived: true to see them too. |
 | `POST` | `/v1/runs/{runId}/archive` | Close a campaign run and take it off the active list. Keeps every contact and every message, deleting contacts stays a human act in the app. |
 | `POST` | `/v1/runs/{runId}/confirm-companies` | Confirm a run's company list so Selda finds the decision-makers and drafts the messages. Spends credits. Sends nothing, the send is still a human press in the app. |
 | `GET` | `/v1/runs/{runId}/leads` | The companies a run found, each with the message Selda drafted for it. Nothing is sent. |
 | `POST` | `/v1/runs/{runId}/rename` | Give a campaign run a name a person would recognise. An empty name restores the derived title. |
 | `GET` | `/v1/runs/{runId}/status` | Status of one campaign run: phase, companies found, contacts resolved, drafts written, errors. |
+| `POST` | `/v1/runs/attach` | Attach files to EVERY message in a campaign that has not gone out yet, by public https url or by storageId. Messages already sent keep exactly what they carried. |
+| `POST` | `/v1/runs/detach` | Take one file off a campaign. Every unsent message loses it; sent messages keep their record. The bytes are never deleted. |
 | `POST` | `/v1/runs/start-from-leads` | Start a campaign from leads already pushed in with selda_add_lead, selected by the source label you gave them. No discovery, Selda writes a message per lead from the analysis that came with it, and stops at the drafts. |
+
+## `signals`
+
+| Method | Path | What it does |
+|--------|------|--------------|
+| `POST` | `/v1/signals/list` | The signals Selda has found for a workspace, newest first. Read-only: it changes nothing and spends nothing. |
+| `POST` | `/v1/signals/start-campaign` | Turn chosen signals into a campaign run. Holds at the company list unless told otherwise. Spends credits. Sends nothing, the send is still a human press in the app. |
 
 ## `webhooks`
 

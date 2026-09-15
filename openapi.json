@@ -4,7 +4,7 @@
     "title": "Selda API",
     "version": "1.0.0",
     "summary": "Find the right people, write the message, prepare the campaign. A person still presses send.",
-    "description": "Generated from `convex/lib/mcpRegistry.ts`, the same table the endpoints dispatch from. A\nfunction added to the registry appears here on the next build and one removed disappears, so\nthis document cannot describe a capability the API does not have.\n\n## Authentication\n\n`Authorization: Bearer sk_live_...` or `Bearer sk_test_...`. **Your organisation is resolved\nfrom the key.** You never send an `orgId`, and a key cannot reach a workspace outside the\norganisation it was made in. A `sk_test_` key reaches every read and write that costs Selda\nnothing and cannot spend or send; each operation says whether it refuses one, and why.\n\n## These paths and the RPC endpoints are the same API\n\nEvery route here is dispatched by the same code that answers `POST /mcp/query`,\n`POST /mcp/mutate` and `POST /mcp/run`. The path chooses the function name; nothing else\nchanges. The RPC form is not deprecated and is still the only way to call the few entries\nthat have no route.\n\n## What is not here, on purpose\n\n**There is no operation that sends.** `launchRun` is in no registry, not this one and not the\nMCP one, and it never will be. A script can prepare a campaign completely: import material,\nconfirm the companies, write and rewrite every draft. A human presses send in the app. That is\nthe product's central claim, not a gap waiting to be filled.\n\n**There is no operation that creates a workspace.** `projects.create` is absent rather than\ngated, because a rule enforced by a plan tier is a rule with a price on it.\n\n**Response shapes are almost never documented.** A shape for `value` is published for\n1 of the 71 operations, because one is derived only where the target function declares\na `returns` validator. Everywhere else `value` carries a description saying exactly that,\nrather than an invented object that would go stale with nothing to notice. Call an operation\nonce with a test key and read what comes back.\n\n## Registry entries with no route\n\n- `leads.enrich` on `POST /mcp/run`: another registry table (INTERNAL_ACTIONS) declares leads.enrich on /mcp/run too and the dispatcher checks that one first, so this entry can never be the one that runs.\n- `leads.update` on `POST /mcp/mutate`: another registry table (INTERNAL_MUTATIONS) declares leads.update on /mcp/mutate too and the dispatcher checks that one first, so this entry can never be the one that runs.\n- `replies.draft` on `POST /mcp/run`: `POST /v1/replies/draft` is already the route for `replies.draft` on `/mcp/mutate`, and one URL cannot mean two functions. Call this one at `POST /mcp/run` with `{ \"fn\": \"replies.draft\" }`."
+    "description": "Generated from `convex/lib/mcpRegistry.ts`, the same table the endpoints dispatch from. A\nfunction added to the registry appears here on the next build and one removed disappears, so\nthis document cannot describe a capability the API does not have.\n\n## Authentication\n\n`Authorization: Bearer sk_live_...` or `Bearer sk_test_...`. **Your organisation is resolved\nfrom the key.** You never send an `orgId`, and a key cannot reach a workspace outside the\norganisation it was made in. A `sk_test_` key reaches every read and write that costs Selda\nnothing and cannot spend or send; each operation says whether it refuses one, and why.\n\n## These paths and the RPC endpoints are the same API\n\nEvery route here is dispatched by the same code that answers `POST /mcp/query`,\n`POST /mcp/mutate` and `POST /mcp/run`. The path chooses the function name; nothing else\nchanges. The RPC form is not deprecated and is still the only way to call the few entries\nthat have no route.\n\n## What is not here, on purpose\n\n**There is no operation that sends.** `launchRun` is in no registry, not this one and not the\nMCP one, and it never will be. A script can prepare a campaign completely: import material,\nconfirm the companies, write and rewrite every draft. A human presses send in the app. That is\nthe product's central claim, not a gap waiting to be filled.\n\n**There is no operation that creates a workspace.** `projects.create` is absent rather than\ngated, because a rule enforced by a plan tier is a rule with a price on it.\n\n**Response shapes are almost never documented.** A shape for `value` is published for\n1 of the 78 operations, because one is derived only where the target function declares\na `returns` validator. Everywhere else `value` carries a description saying exactly that,\nrather than an invented object that would go stale with nothing to notice. Call an operation\nonce with a test key and read what comes back.\n\n## Registry entries with no route\n\n- `leads.enrich` on `POST /mcp/run`: another registry table (INTERNAL_ACTIONS) declares leads.enrich on /mcp/run too and the dispatcher checks that one first, so this entry can never be the one that runs.\n- `leads.update` on `POST /mcp/mutate`: another registry table (INTERNAL_MUTATIONS) declares leads.update on /mcp/mutate too and the dispatcher checks that one first, so this entry can never be the one that runs.\n- `replies.draft` on `POST /mcp/run`: `POST /v1/replies/draft` is already the route for `replies.draft` on `/mcp/mutate`, and one URL cannot mean two functions. Call this one at `POST /mcp/run` with `{ \"fn\": \"replies.draft\" }`."
   },
   "servers": [
     {
@@ -85,6 +85,10 @@
     {
       "name": "runs",
       "description": "Campaign runs: their status, their companies, their drafts."
+    },
+    {
+      "name": "signals",
+      "description": "The `signals` functions."
     },
     {
       "name": "webhooks",
@@ -197,7 +201,7 @@
       "post": {
         "operationId": "brain_add",
         "summary": "brain.add",
-        "description": "Add one thing Selda should know: a product, a partner, a reference, a company fact, a note, or something it must never say.\n\nDispatched to `brain.add` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_add_brain_item`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Add one thing Selda should know: a product, a partner, a reference, a company fact, a note, something it must never say, or a `writing_rule` — a standing instruction about HOW messages are written, which reaches the composer as a directive and is never quoted as material.\n\nDispatched to `brain.add` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_add_brain_item`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "brain"
         ],
@@ -2641,6 +2645,386 @@
         ]
       }
     },
+    "/v1/drafts/attach": {
+      "post": {
+        "operationId": "drafts_attach",
+        "summary": "drafts.attach",
+        "description": "Attach files to ONE draft, by public https url or by storageId, on top of what the campaign already gives it. Refuses a message that already went out; never sends.\n\nDispatched to `drafts.attach` on `POST /mcp/run`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `pipeline`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_attach_files`\n- Filled in from your API key, never sent by you: `orgId`",
+        "tags": [
+          "drafts"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `campaignRunner/attachments:attachFilesFromApiKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "drafts.attach",
+        "x-selda-rpc-endpoint": "/mcp/run",
+        "x-selda-scope": "pipeline",
+        "x-selda-sandbox": "allowed",
+        "x-selda-mcp-tools": [
+          "selda_attach_files"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaignRunLeads` table."
+                  },
+                  "runId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaignRuns` table."
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "storageId": {
+                          "type": "string",
+                          "description": "A Convex document id in the `_storage` table."
+                        },
+                        "url": {
+                          "type": "string"
+                        },
+                        "fileName": {
+                          "type": "string"
+                        },
+                        "filename": {
+                          "type": "string"
+                        },
+                        "mimeType": {
+                          "type": "string"
+                        },
+                        "contentType": {
+                          "type": "string"
+                        },
+                        "inline": {
+                          "type": "boolean"
+                        },
+                        "cid": {
+                          "type": "string"
+                        },
+                        "linksTo": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "files"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/drafts/attachments": {
+      "get": {
+        "operationId": "drafts_attachments",
+        "summary": "drafts.attachments",
+        "description": "The files one draft would send (campaign files included, in send order) or the files a campaign gives every message. Each with a url.\n\nDispatched to `drafts.attachments` on `POST /mcp/query`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `read`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_list_attachments`\n- Filled in from your API key, never sent by you: `orgId`",
+        "tags": [
+          "drafts"
+        ],
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "A Convex document id in the `campaignRuns` table."
+            }
+          },
+          {
+            "name": "leadId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "A Convex document id in the `campaignRunLeads` table."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `campaignRunner/attachments:listAttachmentsFromApiKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "drafts.attachments",
+        "x-selda-rpc-endpoint": "/mcp/query",
+        "x-selda-scope": "read",
+        "x-selda-sandbox": "allowed",
+        "x-selda-mcp-tools": [
+          "selda_list_attachments"
+        ]
+      }
+    },
+    "/v1/drafts/detach": {
+      "post": {
+        "operationId": "drafts_detach",
+        "summary": "drafts.detach",
+        "description": "Take one file off ONE draft. A campaign-level file is left out of this message only, everybody else keeps it. The bytes are never deleted.\n\nDispatched to `drafts.detach` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_remove_attachment`\n- Filled in from your API key, never sent by you: `orgId`",
+        "tags": [
+          "drafts"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `campaignRunner/attachments:removeLeadAttachmentFromApiKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "drafts.detach",
+        "x-selda-rpc-endpoint": "/mcp/mutate",
+        "x-selda-scope": "write",
+        "x-selda-sandbox": "allowed",
+        "x-selda-mcp-tools": [
+          "selda_remove_attachment"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaignRunLeads` table."
+                  },
+                  "storageId": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "leadId",
+                  "storageId"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/drafts/remove": {
       "post": {
         "operationId": "drafts_remove",
@@ -3173,6 +3557,19 @@
                   "analysis": {
                     "type": "string",
                     "description": "Research the caller already did, used by engineV3 as authoritative grounding."
+                  },
+                  "mediaImageUrl": {
+                    "type": "string",
+                    "description": "A PICTURE FOR THIS PERSON'S MESSAGE, when the event came with one (15.9.2026). The case this is for: a system finishes an analysis of a company, renders a gif of what it found, and reports the whole thing here in one call. Same four fields and the same rules as `addLead`: public https, placed into this person's draft when it is composed, beaten by nothing except a picture already on their own row. Fresh research is taken as an update on a matched lead and so is a fresh picture, it is what the next message will carry."
+                  },
+                  "mediaLinkUrl": {
+                    "type": "string"
+                  },
+                  "mediaAlt": {
+                    "type": "string"
+                  },
+                  "mediaWidth": {
+                    "type": "number"
                   },
                   "tags": {
                     "type": "array",
@@ -4916,6 +5313,19 @@
                   "externalUrl": {
                     "type": "string"
                   },
+                  "mediaImageUrl": {
+                    "type": "string",
+                    "description": "A PICTURE FOR THIS ONE PERSON'S MESSAGE (15.9.2026). `mediaImageUrl` is a public https address, a gif rendered for this company, a screenshot of their own site. `mediaLinkUrl` makes it clickable, which is how a gif opens a video. It goes into THIS lead's draft when the draft is composed, so it is in the text the human approves, and it beats any picture set on the campaign as a whole. A picture never costs a lead: an address that cannot be used is dropped, the lead is created anyway, and the answer says in words what was not kept and why (`mediaRejected`)."
+                  },
+                  "mediaLinkUrl": {
+                    "type": "string"
+                  },
+                  "mediaAlt": {
+                    "type": "string"
+                  },
+                  "mediaWidth": {
+                    "type": "number"
+                  },
                   "source": {
                     "type": "string"
                   },
@@ -6087,6 +6497,9 @@
                         "companyDomain": {
                           "type": "string"
                         },
+                        "domain": {
+                          "type": "string"
+                        },
                         "jobTitle": {
                           "type": "string"
                         },
@@ -6104,6 +6517,18 @@
                         },
                         "externalUrl": {
                           "type": "string"
+                        },
+                        "mediaImageUrl": {
+                          "type": "string"
+                        },
+                        "mediaLinkUrl": {
+                          "type": "string"
+                        },
+                        "mediaAlt": {
+                          "type": "string"
+                        },
+                        "mediaWidth": {
+                          "type": "number"
                         },
                         "source": {
                           "type": "string"
@@ -8010,7 +8435,7 @@
       "get": {
         "operationId": "runs_list",
         "summary": "runs.list",
-        "description": "Every campaign run in a project, newest first, with its status. Use it to find a runId you no longer have.\n\nDispatched to `runs.list` on `POST /mcp/query`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `read`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_list_runs`\n- Filled in from your API key, never sent by you: `orgId`",
+        "description": "Every campaign run in a project, newest first, with its status. Use it to find a runId you no longer have. Runs the human archived are left out; pass includeArchived: true to see them too.\n\nDispatched to `runs.list` on `POST /mcp/query`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `read`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_list_runs`\n- Filled in from your API key, never sent by you: `orgId`",
         "tags": [
           "runs"
         ],
@@ -8029,6 +8454,15 @@
             "required": false,
             "schema": {
               "type": "number"
+            }
+          },
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "required": false,
+            "description": "Show the runs the human archived as well. Default false, see the note in the handler. It exists because this door's whole reason to exist is that a runId must stay findable, and a filter with no way past it would take that back for exactly the runs somebody tidied away. Archiving hides; it has never deleted anything.",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -8381,6 +8815,24 @@
                     "items": {
                       "type": "string"
                     }
+                  },
+                  "reviewedCompanies": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "domain": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ]
+                    },
+                    "description": "THE COMPANIES THAT WERE ON THE SCREEN WHEN THIS PRESS HAPPENED (14.9.2026). `excludedDomains` says what the human took OFF the list, which only describes their decision while the whole list is in front of them. On a run whose discovery is still arriving it does not: a company that had not been found yet was never removed, and the snapshot then recorded it as approved. Fifty asked for, fourteen walked, thirty-six researched unseen. So the client says which rows it had. Optional, and omitting it is the old behaviour exactly, see the long note on `confirmedCompanyList`, which is where the narrowing lives and where it is intersected with the run's own list so nothing can be approved into existence from here."
                   },
                   "researchCount": {
                     "type": "number"
@@ -8774,6 +9226,274 @@
         ]
       }
     },
+    "/v1/runs/attach": {
+      "post": {
+        "operationId": "runs_attach",
+        "summary": "runs.attach",
+        "description": "Attach files to EVERY message in a campaign that has not gone out yet, by public https url or by storageId. Messages already sent keep exactly what they carried.\n\nDispatched to `runs.attach` on `POST /mcp/run`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `pipeline`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_attach_files`\n- Filled in from your API key, never sent by you: `orgId`",
+        "tags": [
+          "runs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `campaignRunner/attachments:attachFilesFromApiKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "runs.attach",
+        "x-selda-rpc-endpoint": "/mcp/run",
+        "x-selda-scope": "pipeline",
+        "x-selda-sandbox": "allowed",
+        "x-selda-mcp-tools": [
+          "selda_attach_files"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaignRunLeads` table."
+                  },
+                  "runId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaignRuns` table."
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "storageId": {
+                          "type": "string",
+                          "description": "A Convex document id in the `_storage` table."
+                        },
+                        "url": {
+                          "type": "string"
+                        },
+                        "fileName": {
+                          "type": "string"
+                        },
+                        "filename": {
+                          "type": "string"
+                        },
+                        "mimeType": {
+                          "type": "string"
+                        },
+                        "contentType": {
+                          "type": "string"
+                        },
+                        "inline": {
+                          "type": "boolean"
+                        },
+                        "cid": {
+                          "type": "string"
+                        },
+                        "linksTo": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "files"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/runs/detach": {
+      "post": {
+        "operationId": "runs_detach",
+        "summary": "runs.detach",
+        "description": "Take one file off a campaign. Every unsent message loses it; sent messages keep their record. The bytes are never deleted.\n\nDispatched to `runs.detach` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_remove_attachment`\n- Filled in from your API key, never sent by you: `orgId`",
+        "tags": [
+          "runs"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `campaignRunner/attachments:removeRunAttachmentFromApiKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "runs.detach",
+        "x-selda-rpc-endpoint": "/mcp/mutate",
+        "x-selda-scope": "write",
+        "x-selda-sandbox": "allowed",
+        "x-selda-mcp-tools": [
+          "selda_remove_attachment"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "runId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaignRuns` table."
+                  },
+                  "storageId": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "runId",
+                  "storageId"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/runs/start-from-leads": {
       "post": {
         "operationId": "runs_startFromLeads",
@@ -8795,7 +9515,7 @@
                   ],
                   "properties": {
                     "value": {
-                      "description": "Not documented. `campaignRunner/importLeads:startRunFromIntegration` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                      "description": "Not documented. `campaignRunner/importLeads:startRunFromLeadsFromApiKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
                     },
                     "request_id": {
                       "type": "string",
@@ -8879,19 +9599,276 @@
                   "source": {
                     "type": "string"
                   },
+                  "sourceDisplayLabel": {
+                    "type": "string"
+                  },
                   "campaignId": {
                     "type": "string",
                     "description": "A Convex document id in the `campaigns` table."
                   },
                   "campaignBrief": {
-                    "type": "string",
-                    "description": "The operator's campaign document (18.8.2026), rules, structure, tone, what may and may not be claimed. The API could push analyses in but had no way to set the RULES, which made every programmatic campaign half-manual: material in over the wire, brief pasted by hand in the app. Honored exactly as the Määritä card's own-prompt mode is."
+                    "type": "string"
                   }
                 },
                 "additionalProperties": false,
                 "required": [
                   "projectId",
                   "source"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/signals/list": {
+      "post": {
+        "operationId": "signals_list",
+        "summary": "signals.list",
+        "description": "The signals Selda has found for a workspace, newest first. Read-only: it changes nothing and spends nothing.\n\nDispatched to `signals.list` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key may call it\n- MCP tools that wrap the same function: `selda_list_signals`\n- Filled in from your API key, never sent by you: `orgId`\n- A legacy entry. Its summary above says what that costs you.",
+        "tags": [
+          "signals"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `signalEngine/handover:signalsForKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "signals.list",
+        "x-selda-rpc-endpoint": "/mcp/mutate",
+        "x-selda-scope": "write",
+        "x-selda-sandbox": "allowed",
+        "x-selda-mcp-tools": [
+          "selda_list_signals"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "projectId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `projects` table."
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "new",
+                      "used",
+                      "dismissed"
+                    ]
+                  },
+                  "limit": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "projectId"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/signals/start-campaign": {
+      "post": {
+        "operationId": "signals_startCampaign",
+        "summary": "signals.startCampaign",
+        "description": "Turn chosen signals into a campaign run. Holds at the company list unless told otherwise. Spends credits. Sends nothing, the send is still a human press in the app.\n\nDispatched to `signals.startCampaign` on `POST /mcp/mutate`. This route is a different URL for the same call: the request is answered by the same dispatcher, with the same authentication, the same scope check, the same organisation scoping and the same refusals.\n\n- Scope: `write`\n- A free sandbox key is refused: it runs the discovery and research engine: web search, crawls, model calls, per-lead credits\n- MCP tools that wrap the same function: `selda_start_campaign_from_signals`\n- Filled in from your API key, never sent by you: `orgId`\n- A legacy entry. Its summary above says what that costs you.",
+        "tags": [
+          "signals"
+        ],
+        "responses": {
+          "200": {
+            "description": "The call succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "Not documented. `signalEngine/handover:startCampaignFromSignalsForKey` declares no `returns` validator, so there is nothing to derive a shape from, and a shape written out by hand here is a shape that goes stale without anything noticing. Call it once against a test key and read what comes back."
+                    },
+                    "request_id": {
+                      "type": "string",
+                      "description": "Echoed in the `X-Request-Id` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown route, or arguments the validator refused.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks the scope, the plan entitlement, or is a sandbox key on a live-only function.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited. Wait for the next minute window and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The function threw. The message says what, without leaking internals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-selda-fn": "signals.startCampaign",
+        "x-selda-rpc-endpoint": "/mcp/mutate",
+        "x-selda-scope": "write",
+        "x-selda-sandbox": "refused",
+        "x-selda-live-only-reason": "paid_engine_run",
+        "x-selda-mcp-tools": [
+          "selda_start_campaign_from_signals"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "projectId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `projects` table."
+                  },
+                  "signalIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "A Convex document id in the `watchSignals` table."
+                    }
+                  },
+                  "campaignId": {
+                    "type": "string",
+                    "description": "A Convex document id in the `campaigns` table."
+                  },
+                  "holdAtCompanies": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "Names the batch. Absent leaves the same dated label the app writes."
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "projectId",
+                  "signalIds"
                 ]
               }
             }

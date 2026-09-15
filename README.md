@@ -121,7 +121,7 @@ the endpoint is right.**
 | File | What |
 |------|------|
 | [ENDPOINTS.md](./ENDPOINTS.md) | Every route, by group |
-| [openapi.json](./openapi.json) | OpenAPI 3.1.0, 62 paths. Import into Postman or a client generator. |
+| [openapi.json](./openapi.json) | OpenAPI 3.1.0, 69 paths. Import into Postman or a client generator. |
 | [examples/](./examples) | Runnable: curl, Node, Python, PHP |
 | [CHANGELOG.md](./CHANGELOG.md) | What moved, and when |
 
