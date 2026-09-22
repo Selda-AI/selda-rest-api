@@ -3,7 +3,7 @@
 
 # Endpoints
 
-78 routes across 19 groups. Every one is answered by the same
+71 routes across 18 groups. Every one is answered by the same
 dispatcher that answers the RPC form, with the same authentication, the same scope check and
 the same organisation scoping. A path cannot reach anything the RPC form refuses.
 
@@ -79,18 +79,6 @@ Full request and response schemas are in [`openapi.json`](./openapi.json).
 | Method | Path | What it does |
 |--------|------|--------------|
 | `POST` | `/v1/events/ingest` | Report that something happened outside Selda (a form, an analysis, an ad response). Creates the lead if new, recognises it if known, records it on the timeline, and can put it on a campaign's review list. Pass autoAdvance to have Selda write the reply from the Brain straight away and leave it in the Sales Inbox, draft.ready is published when it is there. It never sends. |
-
-## `flows`
-
-| Method | Path | What it does |
-|--------|------|--------------|
-| `GET` | `/v1/flows` | The flows in a workspace: what runs when something arrives from outside, the steps in order, and whether each is switched on. Includes the workspace's flow instruction files. |
-| `POST` | `/v1/flows` | Create a flow: a trigger plus the steps to run when something arrives. Off unless you say otherwise. No step can send. |
-| `DELETE` | `/v1/flows/{flowId}` | Delete a flow and its run log. |
-| `PATCH` | `/v1/flows/{flowId}` | Rewrite a flow's name, trigger or steps. |
-| `GET` | `/v1/flows/{flowId}/runs` | What a flow actually did, run by run, step by step, including the steps that did nothing and why. |
-| `POST` | `/v1/flows/{flowId}/set-enabled` | Switch a flow on or off. |
-| `POST` | `/v1/flows/save-skill` | Write or rewrite an instruction file a flow step reads: how this business decides what an enquiry is. |
 
 ## `inbox`
 

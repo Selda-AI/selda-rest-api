@@ -6,10 +6,30 @@ loudly, so anything that can break yours is recorded here.
 `GET https://api.selda.ai/mcp/capabilities` is always the authority on what exists right now. This
 file tells you what moved.
 
+## 2026-09-22
+
+**No routes changed. Seven stopped being documented.** The `/v1/flows/*` paths are gone from this
+file and from `openapi.json`. They still answer, unchanged, for every key that could call them
+before: nothing was closed and no request that worked yesterday fails today. What changed is that
+they belong to a feature in invite-only early access, and a public reference to something almost
+nobody can reach is a promise rather than a document. If you are in that programme and were calling
+them, keep calling them; `GET /mcp/capabilities` still lists them, and it remains the authority.
+
+**Corrected in the 2026-09-15 entry below:** the batch route was written as
+`POST /v1/leads/batch`. It has always been `POST /v1/leads/add-batch`. A wrong path in a changelog
+is a path somebody copies, so it is fixed rather than annotated in place.
+
+**The generator no longer overwrites this file.** It used to emit a changelog from a template
+frozen at 2026-09-03, so every regeneration silently deleted whatever had been added since. The
+2026-09-15 entry below survived only because somebody edited it back in by hand after the fact.
+This file is now maintained in the Selda monorepo at `docs/selda-rest-api-CHANGELOG.md` and copied
+here verbatim, which is the only arrangement in which a hand-written history and a generated repo
+can coexist.
+
 ## 2026-09-15
 
 **A picture can go out with a message, and it can be a different picture per lead.**
-`POST /v1/leads`, `POST /v1/leads/batch` and `POST /v1/events/ingest` take `mediaImageUrl` and
+`POST /v1/leads`, `POST /v1/leads/add-batch` and `POST /v1/events/ingest` take `mediaImageUrl` and
 `mediaLinkUrl` (plus `mediaAlt` and `mediaWidth`). The picture is written into that lead's draft
 when the message is composed, so a human sees it on the approval screen before anything is sent; a
 picture on the lead beats one set on the whole campaign.

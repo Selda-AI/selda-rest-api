@@ -26,26 +26,25 @@ full product in test mode, nothing sends for real. A paid workspace can mint `sk
 curl -s https://api.selda.ai/mcp/capabilities | jq '.value.count'
 
 # 2. Your workspaces. Every other call needs a projectId.
-curl -s -X POST https://api.selda.ai/mcp/query \
-  -H "Authorization: Bearer $SELDA_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{ "fn": "projects.list", "args": {} }'
+curl -s https://api.selda.ai/v1/projects \
+  -H "Authorization: Bearer $SELDA_API_KEY"
 
 # 3. Push a company you already researched. Selda writes the message FROM your text.
-curl -s -X POST https://api.selda.ai/mcp/mutate \
+curl -s -X POST https://api.selda.ai/v1/leads \
   -H "Authorization: Bearer $SELDA_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "fn": "leads.add", "args": {
+  -d '{
         "projectId": "PASTE_PROJECT_ID",
         "company":   "Nordic Books Oy",
         "email":     "mika@nordicbooks.fi",
         "firstName": "Mika",
         "analysis":  "They run three shops and close the books by hand every month."
-      } }'
+      }'
 ```
 
-The same two calls are `GET /v1/projects` and `POST /v1/leads` as REST paths. Both forms are the
-same dispatcher, so pick whichever suits your client.
+The same two calls in the RPC form are `{ "fn": "projects.list" }` on `POST /mcp/query` and
+`{ "fn": "leads.add" }` on `POST /mcp/mutate`. Both forms are the same dispatcher, so pick
+whichever suits your client.
 
 `analysis` is the point. Pass it and the eventual message is written from your research instead of
 a fresh crawl. Anything invented in that field becomes a claim in a real message, so put facts in
@@ -121,7 +120,7 @@ the endpoint is right.**
 | File | What |
 |------|------|
 | [ENDPOINTS.md](./ENDPOINTS.md) | Every route, by group |
-| [openapi.json](./openapi.json) | OpenAPI 3.1.0, 69 paths. Import into Postman or a client generator. |
+| [openapi.json](./openapi.json) | OpenAPI 3.1.0, 64 paths. Import into Postman or a client generator. |
 | [examples/](./examples) | Runnable: curl, Node, Python, PHP |
 | [CHANGELOG.md](./CHANGELOG.md) | What moved, and when |
 
